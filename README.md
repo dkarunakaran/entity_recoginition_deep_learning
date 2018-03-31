@@ -38,13 +38,11 @@ def get_processing_word(vocab_words=None, vocab_chars=None,
                 if char in vocab_chars:
                     char_ids += [vocab_chars[char]]
 
-        # 1. preprocess word
         if lowercase:
             word = word.lower()
         if word.isdigit():
             word = NUM
 
-        # 2. get id of word
         if vocab_words is not None:
             if word in vocab_words:
                 word = vocab_words[word]
@@ -54,10 +52,7 @@ def get_processing_word(vocab_words=None, vocab_chars=None,
                 else:
                     print(word)
                     print(vocab_words)
-                    #raise Exception("Unknow key is not allowed. Check that "\
-                    #                "your vocab (tags?) is correct")
 
-        # 3. return tuple char ids, word id
         if vocab_chars is not None and chars == True:
             return char_ids, word
         else:
