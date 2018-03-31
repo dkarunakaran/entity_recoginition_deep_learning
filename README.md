@@ -3,23 +3,24 @@
 Please visit my medium link to see the explanation of the project.
 
 ```
-with tf.variable_scope("words"):
-    _word_embeddings = tf.Variable(
-                self.w_embeddings,
-                name="_word_embeddings",
-                dtype=tf.float32,
-                trainable=self.config.train_embeddings)
-
-    word_embeddings = tf.nn.embedding_lookup(_word_embeddings,
-            self.word_ids_tensor, name="word_embeddings")
-
-with tf.variable_scope("chars"):
-    # get char embeddings matrix
-    _char_embeddings = tf.get_variable(
-            name="_char_embeddings",
-            dtype=tf.float32,
-            shape=[self.config.nchars, self.config.dim_char])
-    char_embeddings = tf.nn.embedding_lookup(_char_embeddings,
-            self.char_ids_tensor, name="char_embeddings")
-
+with open(self.filename) as f:
+    words, tags = [], []
+    for line in f:
+        line = line.strip()
+        if (len(line) == 0 or line.startswith("-DOCSTART-")):
+            if len(words) != 0:
+                niter += 1
+                if self.max_iter is not None and niter > self.max_iter:
+                    break
+                yield words, tags
+                words, tags = [], []
+        else:
+            ls = line.split(' ')
+            word, tag = ls[0],ls[-1]
+            if self.processing_word is not None:
+                word = self.processing_word(word)
+            if self.processing_tag is not None:
+                tag = self.processing_tag(tag)
+            words += [word]
+            tags += [tag]
 ```
